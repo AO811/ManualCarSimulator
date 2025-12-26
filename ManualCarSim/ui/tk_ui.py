@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from simulator.state import CarState
 from simulator.engine import update_state
-from simulator. constants import MAX_RPM, REDLINE_RPM, IDLE_RPM
+from simulator.constants import MAX_RPM, REDLINE_RPM, IDLE_RPM
 
 class SimulatorUI:
     def __init__(self, root):
@@ -94,11 +94,11 @@ class SimulatorUI:
             btn.pack(side="left", padx=2)
         
         # === Pedals Frame ===
-        pedals_frame = tk.Frame(self. root, bg="#1a1a2e")
+        pedals_frame = tk.Frame(self.root, bg="#1a1a2e")
         pedals_frame.pack(pady=15)
         
         # Clutch
-        clutch_frame = tk. Frame(pedals_frame, bg="#1a1a2e")
+        clutch_frame = tk.Frame(pedals_frame, bg="#1a1a2e")
         clutch_frame.pack(side="left", padx=10)
         tk.Label(clutch_frame, text="CLUTCH [C]", font=("Arial", 10), bg="#1a1a2e", fg="#aaa").pack()
         self.clutch = tk.Scale(
@@ -106,7 +106,7 @@ class SimulatorUI:
             length=150, bg="#333", fg="#fff", troughcolor="#555",
             highlightthickness=0
         )
-        self.clutch.set(0)  # Start with clutch pressed
+        self.clutch.set(100)  # Start with clutch pressed (100 = pedal down = disengaged)
         self.clutch.pack()
         
         # Brake
@@ -135,7 +135,7 @@ class SimulatorUI:
         
         # === Options Frame ===
         options_frame = tk.Frame(self.root, bg="#1a1a2e")
-        options_frame. pack(pady=10)
+        options_frame.pack(pady=10)
         
         self.handbrake_var = tk.BooleanVar(value=False)
         self.handbrake_btn = tk.Checkbutton(
@@ -151,7 +151,7 @@ class SimulatorUI:
         self.handbrake_btn.pack(side="left", padx=10)
         
         self.hill_var = tk.BooleanVar(value=False)
-        self.hill_btn = tk. Checkbutton(
+        self.hill_btn = tk.Checkbutton(
             options_frame,
             text="⛰ Hill Mode",
             variable=self.hill_var,
@@ -165,14 +165,14 @@ class SimulatorUI:
         
         # === Feedback ===
         self.feedback = tk.Label(
-            self. root, 
+            self.root, 
             text="🚗 Press C for clutch, shift to 1st, release slowly while adding gas! ",
             font=("Arial", 11),
             bg="#1a1a2e",
             fg="#ff0",
             wraplength=450
         )
-        self.feedback. pack(pady=15)
+        self.feedback.pack(pady=15)
         
         # === Buttons ===
         btn_frame = tk.Frame(self.root, bg="#1a1a2e")
@@ -198,25 +198,25 @@ class SimulatorUI:
         ).pack(side="bottom", pady=5)
     
     def bind_keys(self):
-        self.root.bind('<KeyPress-c>', lambda e: self.clutch. set(0))
-        self.root.bind('<KeyRelease-c>', lambda e: self.clutch.set(100))
+        self.root.bind('<KeyPress-c>', lambda e: self.clutch.set(100))  # Press C = press clutch pedal
+        self.root.bind('<KeyRelease-c>', lambda e: self.clutch.set(0))   # Release C = release clutch pedal
         self.root.bind('<KeyPress-space>', lambda e:  self.brake.set(100))
         self.root.bind('<KeyRelease-space>', lambda e: self.brake.set(0))
         self.root.bind('<KeyPress-Up>', lambda e: self.accel.set(100))
-        self.root.bind('<KeyRelease-Up>', lambda e: self. accel.set(0))
+        self.root.bind('<KeyRelease-Up>', lambda e: self.accel.set(0))
         
         # Gear keys
         self.root.bind('1', lambda e: self.gear_var.set(1))
         self.root.bind('2', lambda e: self.gear_var.set(2))
         self.root.bind('3', lambda e: self.gear_var.set(3))
-        self.root.bind('4', lambda e: self.gear_var. set(4))
+        self.root.bind('4', lambda e: self.gear_var.set(4))
         self.root.bind('5', lambda e: self.gear_var.set(5))
         self.root.bind('n', lambda e: self.gear_var.set(0))
         self.root.bind('r', lambda e: self.gear_var.set(-1))
-        self.root.bind('h', lambda e: self.handbrake_var.set(not self.handbrake_var. get()))
+        self.root.bind('h', lambda e: self.handbrake_var.set(not self.handbrake_var.get()))
     
     def reset(self):
-        self.state. reset()
+        self.state.reset()
         self.clutch.set(0)
         self.brake.set(0)
         self.accel.set(0)
@@ -240,12 +240,12 @@ class SimulatorUI:
             color = "#ff0000"  # Red - redline
         
         # Draw arc background
-        self.rpm_canvas. create_arc(10, 10, 110, 110, start=135, extent=270, style="arc", outline="#333", width=15)
+        self.rpm_canvas.create_arc(10, 10, 110, 110, start=135, extent=270, style="arc", outline="#333", width=15)
         
         # Draw filled arc
         if rpm_percent > 0:
             extent = rpm_percent * 270
-            self.rpm_canvas. create_arc(10, 10, 110, 110, start=135, extent=extent, style="arc", outline=color, width=15)
+            self.rpm_canvas.create_arc(10, 10, 110, 110, start=135, extent=extent, style="arc", outline=color, width=15)
         
         self.rpm_label.config(text=f"{int(self.state.rpm)}", fg=color)
     
@@ -260,7 +260,7 @@ class SimulatorUI:
             color = "#ff6600"  # Orange for reverse
         
         # Draw arc background
-        self.speed_canvas. create_arc(10, 10, 110, 110, start=135, extent=270, style="arc", outline="#333", width=15)
+        self.speed_canvas.create_arc(10, 10, 110, 110, start=135, extent=270, style="arc", outline="#333", width=15)
         
         # Draw filled arc
         if speed_percent > 0:
@@ -283,7 +283,7 @@ class SimulatorUI:
             text = str(gear)
             color = "#0f0"
         
-        self.gear_display. config(text=text, fg=color)
+        self.gear_display.config(text=text, fg=color)
     
     def update_loop(self):
         # Update state from options

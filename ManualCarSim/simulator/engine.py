@@ -19,7 +19,7 @@ def get_clutch_engagement(clutch_pedal):
     else:
         # Gradual engagement between bite point and full engage
         return (clutch_released - CLUTCH_BITE_POINT) / (CLUTCH_FULL_ENGAGE - CLUTCH_BITE_POINT)
-    
+
 def update_state(state, clutch, accel, brake, gear):
     """
     Update car state based on inputs.
@@ -39,7 +39,7 @@ def update_state(state, clutch, accel, brake, gear):
     # --- Handbrake logic ---
     if state.handbrake:
         if state.speed > 0:
-            state. speed = max(0, state.speed - BRAKE_FACTOR * 2)
+            state.speed = max(0, state.speed - BRAKE_FACTOR * 2)
         feedback = "🅿 Handbrake engaged"
     
     # --- Neutral or clutch fully pressed ---
@@ -50,7 +50,7 @@ def update_state(state, clutch, accel, brake, gear):
         
         # Apply brakes or natural slowdown
         if brake > 0:
-            state. speed = max(0, state. speed - brake / 100 * BRAKE_FACTOR)
+            state.speed = max(0, state. speed - brake / 100 * BRAKE_FACTOR)
         else:
             state.speed = max(0, state.speed - SPEED_DECAY_RATE)
         
@@ -65,7 +65,7 @@ def update_state(state, clutch, accel, brake, gear):
     
     # --- Gear engaged with clutch (partially) released ---
     else:
-        gear_ratio = GEAR_RATIOS. get(gear, 1)
+        gear_ratio = GEAR_RATIOS.get(gear, 1)
         max_speed = GEAR_MAX_SPEED.get(gear, 100)
         
         # Calculate engine load based on speed and gear
@@ -143,7 +143,7 @@ def update_state(state, clutch, accel, brake, gear):
         # Wrong gear warnings
         if state.speed < 10 and gear >= 3:
             feedback = "⚠ Gear too high for speed!"
-        if state.speed > GEAR_MAX_SPEED. get(gear, 100) * 0.95 and gear < 5:
+        if state.speed > GEAR_MAX_SPEED.get(gear, 100) * 0.95 and gear < 5:
             feedback = f"⬆ Maxed out gear {gear}!  Shift up!"
     
     # Clamp values

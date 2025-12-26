@@ -11,8 +11,8 @@ class CarState:
         self.engine_on = True
         self.gear = 0
         self.speed = 0.0
-        self.rpm = 800
-        self.handbrake = False
+        self. rpm = 800
+        self. handbrake = False
         # Keep hill setting as is
     
     def stall(self):
